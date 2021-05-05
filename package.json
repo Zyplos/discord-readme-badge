@@ -10,5 +10,8 @@
   "author": "Angel (Zyplos)",
   "dependencies": {
     "dotenv": "^8.2.0"
+  },
+  "devDependencies": {
+    "eslint": "^7.25.0"
   }
 }

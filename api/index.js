@@ -1,6 +1,7 @@
 require("dotenv").config();
 const Card = require("../src/Card");
 const Discord = require("discord.js");
+const imageToBase64 = require("image-to-base64");
 
 const allowlistGames = require("../src/allowlistGames");
 
@@ -20,13 +21,15 @@ const processText = (input) => {
   return encodeHTML(truncate(input));
 };
 
-function parsePresence(user) {
+async function parsePresence(user) {
   const username = processText(user.username);
-  const pfpImage = user.displayAvatarURL({
+  let pfpImage = user.displayAvatarURL({
     format: "jpg",
     dynamic: true,
     size: 512,
   });
+  pfpImage = await imageToBase64(pfpImage);
+  pfpImage = "data:image/png;base64," + pfpImage;
 
   const statuses = user.presence.clientStatus;
   if (!statuses) {
@@ -105,6 +108,9 @@ function parsePresence(user) {
         "spotify:",
         ""
       )}`;
+
+    detailsImage = await imageToBase64(detailsImage);
+    detailsImage = "data:image/png;base64," + detailsImage;
   }
 
   const state = processText(gameObject.state);
@@ -160,7 +166,8 @@ module.exports = async (req, res) => {
         state: "Are you in the server? Correct ID?",
       });
     } else {
-      card = new Card(parsePresence(member.user));
+      const cardContent = await parsePresence(member.user);
+      card = new Card(cardContent);
     }
 
     return res.send(card.render());

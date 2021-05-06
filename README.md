@@ -18,7 +18,7 @@ Once you've joined, you can add a badge to your profile using this snippet:
 
 It should look something like this:
 
-<p>![Card with Rich Presence](./src/assets/example-richpresence.png)</p>
+<p><img alt="Card with Rich Presence" src="./src/assets/example-richpresence.png" /></p>
 
 ## Card states
 
@@ -26,8 +26,8 @@ The card will only display certain games. Since this is meant to show off what y
 
 If the game you're playing does not have rich presence, it will look something like this:
 
-<p>![Card without Rich Presence](./src/assets/example-game.png)</p>
+<p><img alt="Card without Rich Presence" src="./src/assets/example-game.png" /></p>
 
 If you're not playing anything, it will just show your status:
 
-<p>![Card Default](./src/assets/example-nogame.png)</p>
+<p><img alt="Card Default" src="./src/assets/example-nogame.png" /></p>

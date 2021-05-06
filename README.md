@@ -17,14 +17,17 @@ Once you've joined, you can add a badge to your profile using this snippet:
 ```
 
 It should look something like this:
-![Card with Rich Presence](./src/assets/example-richpresence.svg)
+
+<p>![Card with Rich Presence](./src/assets/example-richpresence.png)</p>
 
 ## Card states
 
 The card will only display certain games. Since this is meant to show off what you're working on, they are IDEs and creative programs. The full list of shown games can be found at [allowlistGames.js](./src/allowlistGames.js). If there are missing ones you would like to add, create a pull request.
 
 If the game you're playing does not have rich presence, it will look something like this:
-![Card without Rich Presence](./src/assets/example-game.svg)
+
+<p>![Card without Rich Presence](./src/assets/example-game.png)</p>
 
 If you're not playing anything, it will just show your status:
-![Card Default](./src/assets/example-nogame.svg)
+
+<p>![Card Default](./src/assets/example-nogame.png)</p>

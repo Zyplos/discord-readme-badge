@@ -128,7 +128,7 @@ module.exports = async (req, res) => {
 
   const client = new Discord.Client();
 
-  client.login(process.env.BOT_TOKEN).then(async () => {
+  client.login(process.env.BOTTOKEN).then(async () => {
     const member = await client.guilds
       .fetch("839432085856583730")
       .then(async (guild) => {

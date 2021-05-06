@@ -74,7 +74,7 @@ function parsePresence(user) {
     };
   }
 
-  console.log(gameObject);
+  // console.log(gameObject);
 
   const game = processText(gameObject.name);
   let gameType = "Playing";
@@ -144,7 +144,7 @@ module.exports = async (req, res) => {
       });
     client.destroy();
 
-    console.log(member);
+    // console.log(member);
 
     let card;
     if (member instanceof Discord.DiscordAPIError) {

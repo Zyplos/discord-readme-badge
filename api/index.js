@@ -97,7 +97,7 @@ async function parsePresence(user) {
     };
   }
 
-  const details = processText(gameObject.details);
+  const details = gameObject.details ? processText(gameObject.details) : "";
 
   let detailsImage = false;
   if (gameObject.assets && gameObject.assets.largeImage) {
@@ -113,7 +113,7 @@ async function parsePresence(user) {
     detailsImage = "data:image/png;base64," + detailsImage;
   }
 
-  const state = processText(gameObject.state);
+  const state = gameObject.state ? processText(gameObject.state) : "";
 
   return {
     username,
@@ -129,6 +129,7 @@ async function parsePresence(user) {
 
 module.exports = async (req, res) => {
   res.setHeader("Content-Type", "image/svg+xml");
+  res.setHeader("Cache-Control", "public, max-age=30");
 
   const { id } = req.query;
 

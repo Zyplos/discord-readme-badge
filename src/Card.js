@@ -57,7 +57,7 @@ class Card {
 
   render() {
     return `
-<svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="382" height="${this.height}" viewBox="0 0 382 ${ths.height}">
+<svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="382" height="${this.height}" viewBox="0 0 382 ${this.height}">
   <defs>
     <style>
       .cls-1{

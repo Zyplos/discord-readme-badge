@@ -36,6 +36,7 @@ class Card {
     details,
     detailsImage,
     state,
+    height,
   }) {
     this.username = username;
     this.pfpImage = pfpImage;
@@ -45,6 +46,7 @@ class Card {
     this.details = details;
     this.detailsImage = detailsImage;
     this.state = state;
+    this.height = height;
 
     this.statusColor = statusColors[status];
 
@@ -55,7 +57,7 @@ class Card {
 
   render() {
     return `
-<svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="382" height="187" viewBox="0 0 382 187">
+<svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="382" height="${this.height}" viewBox="0 0 382 187">
   <defs>
     <style>
       .cls-1{

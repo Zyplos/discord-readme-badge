@@ -42,7 +42,7 @@ async function parsePresence(user) {
       details: "",
       detailsImage: false,
       state: "",
-      height: 128,
+      height: 97,
     };
   }
   const status = statuses.desktop || statuses.mobile || statuses.web;
@@ -75,7 +75,7 @@ async function parsePresence(user) {
       details: "",
       detailsImage: false,
       state: "",
-      height: 128,
+      height: 97,
     };
   }
 

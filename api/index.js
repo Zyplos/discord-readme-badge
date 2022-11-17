@@ -141,7 +141,7 @@ module.exports = async (req, res) => {
 
   client.login(process.env.BOTTOKEN).then(async () => {
     const member = await client.guilds
-      .fetch("839432085856583730")
+      .fetch("745179308930236427")
       .then(async (guild) => {
         return await guild.members
           .fetch({

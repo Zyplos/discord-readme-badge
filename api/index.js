@@ -75,7 +75,7 @@ async function parsePresence(user) {
       details: "",
       detailsImage: false,
       state: "",
-      height: 187,
+      height: 128,
     };
   }
 
@@ -96,7 +96,7 @@ async function parsePresence(user) {
       details: "",
       detailsImage: false,
       state: "",
-      height: 187,
+      height: 150,
     };
   }
 
@@ -169,7 +169,6 @@ module.exports = async (req, res) => {
         details: processText(member.toString()),
         detailsImage: false,
         state: "Are you in the server? Correct ID?",
-        height: 187,
       });
     } else {
       const cardContent = await parsePresence(member.user);

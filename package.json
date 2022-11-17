@@ -12,7 +12,6 @@
     "bufferutil": "^4.0.3",
     "discord.js": "^12.5.3",
     "dotenv": "^8.2.0",
-    "erlpack": "github:discord/erlpack",
     "image-to-base64": "^2.2.0",
     "utf-8-validate": "^5.0.5",
     "zlib-sync": "^0.1.7"

@@ -96,7 +96,7 @@ async function parsePresence(user) {
       details: "",
       detailsImage: false,
       state: "",
-      height: 150,
+      height: 97,
     };
   }
 

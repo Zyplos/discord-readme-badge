@@ -169,6 +169,7 @@ module.exports = async (req, res) => {
         details: processText(member.toString()),
         detailsImage: false,
         state: "Are you in the server? Correct ID?",
+        height: 187,
       });
     } else {
       const cardContent = await parsePresence(member.user);

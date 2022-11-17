@@ -122,7 +122,7 @@ class Card {
       <rect id="details-image-clip-shape" class="cls-1" x="34" y="106" width="52" height="52" rx="8" />
     </clipPath>
   </defs>
-  <rect id="base-shape" class="cls-2" width="382" height="187" rx="4"/>
+  <rect id="base-shape" class="cls-2" width="382" height="${this.height}" rx="4"/>
   <text id="username-text" class="cls-3" transform="translate(94.66 43.89)">${
     this.username
   }</text>

@@ -137,7 +137,7 @@ module.exports = async (req, res) => {
     if (member instanceof Discord.DiscordAPIError) {
       card = new Card({
         username: "Error",
-        pfpImage: "https://canary.discord.com/assets/1cbd08c76f8af6dddce02c5138971129.png",
+        pfpImage: "https://cdn.discordapp.com/icons/839432085856583730/59d186ba87f3d08917893a1273dce0ae.webp?size=1280",
         status: "dnd",
         game: "Zyplos/discord-readme-badge",
         gameType: "Check",

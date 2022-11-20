@@ -42,6 +42,7 @@ async function parsePresence(user) {
       details: "",
       detailsImage: false,
       state: "",
+      height: 97,
     };
   }
   const status = statuses.desktop || statuses.mobile || statuses.web;
@@ -74,6 +75,7 @@ async function parsePresence(user) {
       details: "",
       detailsImage: false,
       state: "",
+      height: 97,
     };
   }
 
@@ -94,6 +96,7 @@ async function parsePresence(user) {
       details: "",
       detailsImage: false,
       state: "",
+      height: 97,
     };
   }
 
@@ -124,6 +127,7 @@ async function parsePresence(user) {
     details,
     detailsImage,
     state,
+    height: 187,
   };
 }
 
@@ -137,7 +141,7 @@ module.exports = async (req, res) => {
 
   client.login(process.env.BOTTOKEN).then(async () => {
     const member = await client.guilds
-      .fetch("839432085856583730")
+      .fetch("745179308930236427")
       .then(async (guild) => {
         return await guild.members
           .fetch({
@@ -165,6 +169,7 @@ module.exports = async (req, res) => {
         details: processText(member.toString()),
         detailsImage: false,
         state: "Are you in the server? Correct ID?",
+        height: 187,
       });
     } else {
       const cardContent = await parsePresence(member.user);

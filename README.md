@@ -31,3 +31,7 @@ If the game you're playing does not have rich presence, it will look something l
 If you're not playing anything, it will just show your status:
 
 <p><img alt="Card Default" src="./src/assets/example-nogame.png" /></p>
+
+If you're listening to some tunes on Spotify, it will show what you're listening to:
+
+<p><img alt="Card with Spotify" src="./src/assets/example-spotify.png" /></p>

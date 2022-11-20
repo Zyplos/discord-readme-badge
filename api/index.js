@@ -142,7 +142,7 @@ module.exports = async (req, res) => {
         game: "Zyplos/discord-readme-badge",
         gameType: "Check",
         details: processText(member.toString()),
-        detailsImage: false,
+        detailsImage: "https://sparkcdnwus2.azureedge.net/sparkimageassets/XPDC2RH70K22MN-08afd558-a61c-4a63-9171-d3f199738e9f",
         state: "Are you in the server? Correct ID?",
         height: 187,
       });

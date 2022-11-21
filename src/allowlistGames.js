@@ -16,5 +16,6 @@ module.exports = [
   "intellij idea ultimate",
   "intellij idea community",
   "PhpStorm",
-  "JetBrains IDE"
+  "JetBrains IDE",
+  "Youtube music",
 ];

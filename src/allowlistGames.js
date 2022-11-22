@@ -15,7 +15,7 @@ module.exports = [
   "aseprite",
   "intellij idea ultimate",
   "intellij idea community",
-  "PhpStorm",
-  "JetBrains IDE",
+  "phpstorm",
+  "jetbrains ide",
   "youtube music",
 ];

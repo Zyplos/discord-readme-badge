@@ -94,10 +94,10 @@ async function parsePresence(user) {
       detailsImage = `https://cdn.discordapp.com/app-assets/${gameObject.applicationID}/${gameObject.assets.largeImage}.png`;
 
       if (game == "Spotify") detailsImage = `https://i.scdn.co/image/${gameObject.assets.largeImage.replace("spotify:", "")}`;
-
-      detailsImage = await imageToBase64(detailsImage);
-      detailsImage = "data:image/png;base64," + detailsImage;
     }
+
+    detailsImage = await imageToBase64(detailsImage);
+    detailsImage = "data:image/png;base64," + detailsImage;
   }
 
   const state = gameObject.state ? processText(gameObject.state) : "";

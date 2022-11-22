@@ -86,12 +86,18 @@ async function parsePresence(user) {
 
   let detailsImage = false;
   if (gameObject.assets && gameObject.assets.largeImage) {
-    detailsImage = `https://cdn.discordapp.com/app-assets/${gameObject.applicationID}/${gameObject.assets.largeImage}.png`;
+    // "mp:" prefixed assets don't use keys and will use different image url formatting
+    // as according to https://discord.com/developers/docs/topics/gateway-events#activity-object-activity-asset-image
+    if (gameObject.assets.largeImage.startsWith("mp:")) {
+      detailsImage = `https://media.discordapp.net/${gameObject.assets.largeImage.substring(3)}`;
+    } else {
+      detailsImage = `https://cdn.discordapp.com/app-assets/${gameObject.applicationID}/${gameObject.assets.largeImage}.png`;
 
-    if (game == "Spotify") detailsImage = `https://i.scdn.co/image/${gameObject.assets.largeImage.replace("spotify:", "")}`;
+      if (game == "Spotify") detailsImage = `https://i.scdn.co/image/${gameObject.assets.largeImage.replace("spotify:", "")}`;
 
-    detailsImage = await imageToBase64(detailsImage);
-    detailsImage = "data:image/png;base64," + detailsImage;
+      detailsImage = await imageToBase64(detailsImage);
+      detailsImage = "data:image/png;base64," + detailsImage;
+    }
   }
 
   const state = gameObject.state ? processText(gameObject.state) : "";

@@ -1,6 +1,7 @@
 module.exports = [
   "visual studio code",
   "visual studio",
+  "code",
   "atom",
   "sublime text",
   "adobe illustrator",

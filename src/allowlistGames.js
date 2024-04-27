@@ -17,6 +17,9 @@ module.exports = [
   "intellij idea ultimate",
   "intellij idea community",
   "phpstorm",
+  "webstorm",
+  "pycharm",
+  "writerside",
   "jetbrains ide",
   "youtube music",
 ];

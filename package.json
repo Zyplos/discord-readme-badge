@@ -1,6 +1,6 @@
 {
   "name": "discord-readme-badge",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -8,15 +8,18 @@
   },
   "author": "Angel (Zyplos)",
   "dependencies": {
-    "bufferutil": "^4.0.3",
-    "discord.js": "^12.5.3",
-    "dotenv": "^8.2.0",
+    "bufferutil": "^4.0.8",
+    "discord.js": "^14.15.2",
+    "dotenv": "^16.4.5",
     "image-to-base64": "^2.2.0",
-    "utf-8-validate": "^5.0.5",
-    "zlib-sync": "^0.1.7"
+    "utf-8-validate": "^6.0.3",
+    "zlib-sync": "^0.1.9"
   },
   "license": "Apache-2.0",
   "devDependencies": {
-    "eslint": "^7.25.0"
+    "eslint": "^9.2.0"
+  },
+  "engines": {
+    "node": ">=20.0.0"
   }
 }

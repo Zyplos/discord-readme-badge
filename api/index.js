@@ -1,162 +1,246 @@
 require("dotenv").config();
 const Card = require("../src/Card");
-const Discord = require("discord.js");
+const { Client, GatewayIntentBits, DiscordAPIError } = require("discord.js");
 const imageToBase64 = require("image-to-base64");
 
 const allowlistGames = require("../src/allowlistGames");
 
-const truncate = (input) => (input.length > 32 ? `${input.substring(0, 32)}...` : input);
+const truncate = (input) =>
+	input.length > 32 ? `${input.substring(0, 32)}...` : input;
 
 const encodeHTML = (input) => {
-  return input.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&apos;");
+	return input
+		.replace(/&/g, "&amp;")
+		.replace(/</g, "&lt;")
+		.replace(/>/g, "&gt;")
+		.replace(/"/g, "&quot;")
+		.replace(/'/g, "&apos;");
 };
 
 const processText = (input) => {
-  return encodeHTML(truncate(input));
+	return encodeHTML(truncate(input));
 };
 
-async function parsePresence(user) {
-  const username = processText(user.username);
-  let pfpImage = user.displayAvatarURL({
-    format: "jpg",
-    dynamic: true,
-    size: 512,
-  });
-  pfpImage = await imageToBase64(pfpImage);
-  pfpImage = "data:image/png;base64," + pfpImage;
+/**
+ * @typedef {Object} Presence
+ * @property {string} username
+ * @property {string} pfpImage
+ * @property {string} status
+ * @property {string} gameType
+ * @property {string} game
+ * @property {string} details
+ * @property {string} detailsImage
+ * @property {string} state
+ * @property {number} height
+ *
+ * @param {import("discord.js").GuildMember} member
+ */
+async function parsePresence(member) {
+	const username = processText(member.user.username);
+	let pfpImage = member.displayAvatarURL({
+		format: "jpg",
+		dynamic: true,
+		size: 512,
+	});
+	pfpImage = await imageToBase64(pfpImage);
+	pfpImage = `data:image/png;base64,${pfpImage}`;
 
-  const statuses = user.presence.clientStatus;
-  if (!statuses) {
-    return {
-      username,
-      pfpImage,
-      status: "offline",
-      gameType: "Offline",
-      game: "",
-      details: "",
-      detailsImage: false,
-      state: "",
-      height: 97,
-    };
-  }
-  const status = statuses.desktop || statuses.mobile || statuses.web;
+	// console.log(member.presence);
 
-  const playingRichGame = user.presence.activities.reverse().find((e) => allowlistGames.includes(e.name.toLowerCase()) && (e.details || e.state));
-  const playingGame = user.presence.activities.reverse().find((e) => allowlistGames.includes(e.name.toLowerCase()) && !e.details && !e.state);
-  const spotifyGame = user.presence.activities.find((e) => e.type == "LISTENING" && e.name == "Spotify");
+	const statuses = member.presence.clientStatus;
+	if (!statuses) {
+		return {
+			username,
+			pfpImage,
+			status: "offline",
+			gameType: "Offline",
+			game: "",
+			details: "",
+			detailsImage: false,
+			state: "",
+			height: 97,
+		};
+	}
+	const status = statuses.desktop || statuses.mobile || statuses.web;
 
-  const gameObject = playingRichGame || playingGame || spotifyGame;
+	const playingRichGame = member.presence.activities
+		.reverse()
+		.find(
+			(e) =>
+				allowlistGames.includes(e.name.toLowerCase()) && (e.details || e.state),
+		);
+	const playingGame = member.presence.activities
+		.reverse()
+		.find(
+			(e) =>
+				allowlistGames.includes(e.name.toLowerCase()) && !e.details && !e.state,
+		);
+	const spotifyGame = member.presence.activities.find(
+		(e) => e.type === "LISTENING" && e.name === "Spotify",
+	);
 
-  if (!gameObject) {
-    return {
-      username,
-      pfpImage,
-      status,
-      gameType: "",
-      game: "",
-      details: "",
-      detailsImage: false,
-      state: "",
-      height: 97,
-    };
-  }
+	const gameObject = playingRichGame || playingGame || spotifyGame;
 
-  // console.log(gameObject);
+	if (!gameObject) {
+		return {
+			username,
+			pfpImage,
+			status,
+			gameType: "",
+			game: "",
+			details: "",
+			detailsImage: false,
+			state: "",
+			height: 97,
+		};
+	}
 
-  const game = processText(gameObject.name);
-  let gameType = "Playing";
+	// console.log(gameObject);
 
-  if (game == "Spotify") gameType = "Listening to";
+	const game = processText(gameObject.name);
+	let gameType = "Playing";
 
-  if (!gameObject.details && !gameObject.state) {
-    return {
-      username,
-      pfpImage,
-      status,
-      gameType,
-      game,
-      details: "",
-      detailsImage: false,
-      state: "",
-      height: 97,
-    };
-  }
+	if (game === "Spotify") gameType = "Listening to";
 
-  const details = gameObject.details ? processText(gameObject.details) : "";
+	if (!gameObject.details && !gameObject.state) {
+		return {
+			username,
+			pfpImage,
+			status,
+			gameType,
+			game,
+			details: "",
+			detailsImage: false,
+			state: "",
+			height: 97,
+		};
+	}
 
-  let detailsImage = false;
-  if (gameObject.assets && gameObject.assets.largeImage) {
-    // "mp:" prefixed assets don't use keys and will use different image url formatting
-    // as according to https://discord.com/developers/docs/topics/gateway-events#activity-object-activity-asset-image
-    if (gameObject.assets.largeImage.startsWith("mp:")) {
-      detailsImage = `https://media.discordapp.net/${gameObject.assets.largeImage.substring(3)}`;
-    } else {
-      detailsImage = `https://cdn.discordapp.com/app-assets/${gameObject.applicationID}/${gameObject.assets.largeImage}.png`;
+	const details = gameObject.details ? processText(gameObject.details) : "";
 
-      if (game == "Spotify") detailsImage = `https://i.scdn.co/image/${gameObject.assets.largeImage.replace("spotify:", "")}`;
-    }
+	let detailsImageUrl = false;
+	let detailsImage = false;
+	if (gameObject.assets?.largeImage) {
+		// "mp:" prefixed assets don't use keys and will use different image url formatting
+		// as according to https://discord.com/developers/docs/topics/gateway-events#activity-object-activity-asset-image
+		if (gameObject.assets.largeImage.startsWith("mp:")) {
+			detailsImageUrl = `https://media.discordapp.net/${gameObject.assets.largeImage.substring(
+				3,
+			)}`;
+		} else {
+			detailsImageUrl = `https://cdn.discordapp.com/app-assets/${gameObject.applicationId}/${gameObject.assets.largeImage}.png`;
 
-    detailsImage = await imageToBase64(detailsImage);
-    detailsImage = "data:image/png;base64," + detailsImage;
-  }
+			if (game === "Spotify")
+				detailsImageUrl = `https://i.scdn.co/image/${gameObject.assets.largeImage.replace(
+					"spotify:",
+					"",
+				)}`;
+		}
 
-  const state = gameObject.state ? processText(gameObject.state) : "";
+		const detailsImageBase64 = await imageToBase64(detailsImageUrl);
+		detailsImage = `data:image/png;base64,${detailsImageBase64}`;
+	}
 
-  return {
-    username,
-    pfpImage,
-    status,
-    game,
-    gameType,
-    details,
-    detailsImage,
-    state,
-    height: 187,
-  };
+	const state = gameObject.state ? processText(gameObject.state) : "";
+
+	return {
+		username,
+		pfpImage,
+		status,
+		game,
+		gameType,
+		details,
+		detailsImage,
+		state,
+		height: 187,
+	};
 }
 
 module.exports = async (req, res) => {
-  res.setHeader("Content-Type", "image/svg+xml");
-  res.setHeader("Cache-Control", "public, max-age=30");
+	res.setHeader("Content-Type", "image/svg+xml");
+	res.setHeader("Cache-Control", "public, max-age=30");
 
-  const { id } = req.query;
+	const { id } = req.query;
 
-  const client = new Discord.Client();
+	const client = new Client({
+		intents: [
+			GatewayIntentBits.Guilds,
+			GatewayIntentBits.GuildPresences,
+			GatewayIntentBits.GuildMembers,
+		],
+	});
 
-  client.login(process.env.DISCORD_BOT_TOKEN).then(async () => {
-    const member = await client.guilds.fetch(process.env.DISCORD_GUILD_ID).then(async (guild) => {
-      return await guild.members
-        .fetch({
-          user: id,
-          cache: false,
-          force: true,
-        })
-        .catch((error) => {
-          return error;
-        });
-    });
-    client.destroy();
+	await client.login(process.env.DISCORD_BOT_TOKEN);
 
-    // console.log(member);
+	const guild = await client.guilds.fetch(process.env.DISCORD_GUILD_ID);
 
-    let card;
-    if (member instanceof Discord.DiscordAPIError) {
-      card = new Card({
-        username: "Error",
-        pfpImage: "https://cdn.discordapp.com/icons/839432085856583730/59d186ba87f3d08917893a1273dce0ae.webp?size=1280",
-        status: "dnd",
-        game: "Zyplos/discord-readme-badge",
-        gameType: "Check",
-        details: processText(member.toString()),
-        detailsImage: "https://sparkcdnwus2.azureedge.net/sparkimageassets/XPDC2RH70K22MN-08afd558-a61c-4a63-9171-d3f199738e9f",
-        state: "Are you in the server? Correct ID?",
-        height: 187,
-      });
-    } else {
-      const cardContent = await parsePresence(member.user);
-      card = new Card(cardContent);
-    }
+	let card;
 
-    return res.send(card.render());
-  });
+	try {
+		const member = await guild.members.fetch({
+			user: id,
+			cache: false,
+			force: true,
+		});
+
+		// console.log("GOT MEMBER", member);
+		// console.log("MEMBER PRESENCE", member.presence);
+
+		const cardContent = await parsePresence(member);
+		card = new Card(cardContent);
+	} catch (error) {
+		if (error?.code !== 10013) {
+			console.error(error);
+		}
+
+		if (error instanceof DiscordAPIError) {
+			if (error.code === 10013) {
+				card = new Card({
+					username: "Error",
+					pfpImage:
+						"https://cdn.discordapp.com/icons/839432085856583730/59d186ba87f3d08917893a1273dce0ae.webp?size=1280",
+					status: "dnd",
+					game: "Zyplos/discord-readme-badge",
+					gameType: "Check",
+					details: "You don't seem to be in the server.",
+					detailsImage:
+						"https://sparkcdnwus2.azureedge.net/sparkimageassets/XPDC2RH70K22MN-08afd558-a61c-4a63-9171-d3f199738e9f",
+					state: "Did you use the correct user ID?",
+					height: 187,
+				});
+			} else {
+				card = new Card({
+					username: "Error",
+					pfpImage:
+						"https://cdn.discordapp.com/icons/839432085856583730/59d186ba87f3d08917893a1273dce0ae.webp?size=1280",
+					status: "dnd",
+					game: "Zyplos/discord-readme-badge",
+					gameType: "Check",
+					details: "Sorry, an error occured!",
+					detailsImage:
+						"https://sparkcdnwus2.azureedge.net/sparkimageassets/XPDC2RH70K22MN-08afd558-a61c-4a63-9171-d3f199738e9f",
+					state: "Are you in the server? Correct ID?",
+					height: 187,
+				});
+			}
+		} else {
+			card = new Card({
+				username: "Error",
+				pfpImage:
+					"https://cdn.discordapp.com/icons/839432085856583730/59d186ba87f3d08917893a1273dce0ae.webp?size=1280",
+				status: "dnd",
+				game: "Zyplos/discord-readme-badge",
+				gameType: "Report to",
+				details: "Sorry, an unexpected error occured!",
+				detailsImage:
+					"https://sparkcdnwus2.azureedge.net/sparkimageassets/XPDC2RH70K22MN-08afd558-a61c-4a63-9171-d3f199738e9f",
+				state: "Please open in an issue.",
+				height: 187,
+			});
+		}
+	}
+
+	await client.destroy();
+
+	return res.send(card.render());
 };

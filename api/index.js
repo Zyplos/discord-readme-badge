@@ -47,6 +47,20 @@ async function parsePresence(member) {
 
 	// console.log(member.presence);
 
+	if (!member.presence) {
+		return {
+			username,
+			pfpImage,
+			status: "offline",
+			gameType: "Offline",
+			game: "",
+			details: "",
+			detailsImage: false,
+			state: "",
+			height: 97,
+		};
+	}
+
 	const statuses = member.presence.clientStatus;
 	if (!statuses) {
 		return {

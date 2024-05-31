@@ -1,7 +1,7 @@
 require("dotenv").config();
 const Card = require("../src/Card");
+const sharp = require("sharp");
 const { Client, GatewayIntentBits, DiscordAPIError } = require("discord.js");
-const imageToBase64 = require("image-to-base64");
 
 const allowlistGames = require("../src/allowlistGames");
 
@@ -21,6 +21,29 @@ const processText = (input) => {
 	return encodeHTML(truncate(input));
 };
 
+const getImageBufferFromUrl = async (imageUrl) => {
+	const response = await fetch(imageUrl);
+
+	if (!response.ok) {
+		throw new Error(`unexpected response ${response.statusText}`);
+	}
+
+	// https://stackoverflow.com/a/76596000
+	const arrayBuffer = await response.arrayBuffer();
+	return Buffer.from(arrayBuffer);
+};
+
+const resizedBufferFromImageBuffer = async (imageBuffer) => {
+	// https://github.com/lovell/sharp/issues/1337#issuecomment-412880172
+	return await sharp(imageBuffer).resize(128, 128).png().toBuffer();
+};
+
+const getBase64FromUrl = async (imageUrl) => {
+	const imageBuffer = await getImageBufferFromUrl(imageUrl);
+	const sharpBuffer = await resizedBufferFromImageBuffer(imageBuffer);
+	return sharpBuffer.toString("base64");
+};
+
 /**
  * @typedef {Object} Presence
  * @property {string} username
@@ -37,13 +60,14 @@ const processText = (input) => {
  */
 async function parsePresence(member) {
 	const username = processText(member.user.username);
-	let pfpImage = member.displayAvatarURL({
-		format: "jpg",
-		dynamic: true,
-		size: 512,
+	const pfpImageUrl = member.displayAvatarURL({
+		format: "png",
+		dynamic: false,
+		size: 128,
 	});
-	pfpImage = await imageToBase64(pfpImage);
-	pfpImage = `data:image/png;base64,${pfpImage}`;
+
+	const pfpImageBase64 = await getBase64FromUrl(pfpImageUrl);
+	const pfpImage = `data:image/png;base64,${pfpImageBase64}`;
 
 	// console.log(member.presence);
 
@@ -151,7 +175,8 @@ async function parsePresence(member) {
 				)}`;
 		}
 
-		const detailsImageBase64 = await imageToBase64(detailsImageUrl);
+		const detailsImageBase64 = await getBase64FromUrl(detailsImageUrl);
+
 		detailsImage = `data:image/png;base64,${detailsImageBase64}`;
 	}
 

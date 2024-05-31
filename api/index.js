@@ -60,14 +60,22 @@ const getBase64FromUrl = async (imageUrl) => {
  */
 async function parsePresence(member) {
 	const username = processText(member.user.username);
-	const pfpImageUrl = member.displayAvatarURL({
-		format: "png",
-		dynamic: false,
-		size: 128,
-	});
 
-	const pfpImageBase64 = await getBase64FromUrl(pfpImageUrl);
-	const pfpImage = `data:image/png;base64,${pfpImageBase64}`;
+	let pfpImage = false;
+	try {
+		const pfpImageUrl = member.displayAvatarURL({
+			format: "png",
+			dynamic: false,
+			size: 128,
+		});
+
+		const pfpImageBase64 = await getBase64FromUrl(pfpImageUrl);
+		pfpImage = `data:image/png;base64,${pfpImageBase64}`;
+	} catch (error) {
+		if (error?.code !== 404 && error?.code !== "ETIMEDOUT") {
+			console.error(error);
+		}
+	}
 
 	// console.log(member.presence);
 
@@ -175,9 +183,15 @@ async function parsePresence(member) {
 				)}`;
 		}
 
-		const detailsImageBase64 = await getBase64FromUrl(detailsImageUrl);
+		try {
+			const detailsImageBase64 = await getBase64FromUrl(detailsImageUrl);
 
-		detailsImage = `data:image/png;base64,${detailsImageBase64}`;
+			detailsImage = `data:image/png;base64,${detailsImageBase64}`;
+		} catch (error) {
+			if (error?.code !== 404 && error?.code !== "ETIMEDOUT") {
+				console.error(error);
+			}
+		}
 	}
 
 	const state = gameObject.state ? processText(gameObject.state) : "";

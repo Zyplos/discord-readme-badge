@@ -138,7 +138,7 @@ class Card {
       <g class="cls-7">
         ${
           this.pfpImage
-            ? `<image id="pfp-image" width="481" height="481" transform="translate(20 17) scale(0.13)" xlink:href="${pfpImage}"/>`
+            ? `<image id="pfp-image" width="481" height="481" transform="translate(20 17) scale(0.13)" xlink:href="${this.pfpImage}"/>`
             : `<rect id="pfp-image" width="481" height="481" transform="translate(20 17) scale(0.13)" fill="#7289da" />`
         }
       </g>

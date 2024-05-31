@@ -57,7 +57,9 @@ class Card {
 
   render() {
     return `
-<svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="382" height="${this.height}" viewBox="0 0 382 ${this.height}">
+<svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="382" height="${
+      this.height
+    }" viewBox="0 0 382 ${this.height}">
   <defs>
     <style>
       .cls-1{
@@ -134,16 +136,18 @@ class Card {
   <g id="pfp-group">
     <g id="pfp-clip-group">
       <g class="cls-7">
-        <image id="pfp-image" width="481" height="481" transform="translate(20 17) scale(0.13)" xlink:href="${
+        ${
           this.pfpImage
-        }"/>
+            ? `<image id="pfp-image" width="481" height="481" transform="translate(20 17) scale(0.13)" xlink:href="${pfpImage}"/>`
+            : `<rect id="pfp-image" width="481" height="481" transform="translate(20 17) scale(0.13)" fill="#7289da" />`
+        }
       </g>
     </g>
     <circle id="status-outline" class="cls-2" cx="71.54" cy="68.54" r="10.46"/>
     <circle id="status-color" class="cls-8" cx="71.5" cy="68.5" r="6.5"/>
   </g>
   <g id="details-group" ${
-    this.status == "offline" || !this.game || (!this.details && !this.state)
+    this.status === "offline" || !this.game || (!this.details && !this.state)
       ? 'display="none"'
       : ""
   }>
@@ -158,14 +162,10 @@ class Card {
     </g>
   </g>
   <g id="details-top-text">
-    <text class="cls-11" transform="translate(95.66 126.57)">${
-      this.details
-    }</text>
+    <text class="cls-11" transform="translate(95.66 126.57)">${this.details}</text>
   </g>
   <g id="details-bottom-text">
-    <text class="cls-14" transform="translate(95.66 144.57)">${
-      this.state
-    }</text>
+    <text class="cls-14" transform="translate(95.66 144.57)">${this.state}</text>
   </g>
   </g>
 </svg>`;

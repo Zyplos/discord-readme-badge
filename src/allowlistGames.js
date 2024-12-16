@@ -22,4 +22,5 @@ module.exports = [
   "writerside",
   "jetbrains ide",
   "youtube music",
+  "android studio",
 ];
